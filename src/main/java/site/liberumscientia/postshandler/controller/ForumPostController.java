@@ -6,6 +6,7 @@ import site.liberumscientia.postshandler.dto.ForumPostRequest;
 import site.liberumscientia.postshandler.model.ForumPost;
 import site.liberumscientia.postshandler.model.User;
 
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 
+@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("/api/forum")
 public class ForumPostController {

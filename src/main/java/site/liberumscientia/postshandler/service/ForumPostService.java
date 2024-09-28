@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import site.liberumscientia.postshandler.model.User; // Certifique-se de que a importação está correta
 
@@ -14,12 +13,11 @@ import site.liberumscientia.postshandler.repository.ForumPostRepository;
 
 
 @Service
-public class ForumPostService<UserRepository> {
+public class ForumPostService {
 
     @Autowired
     private ForumPostRepository forumPostRepository;
 
-    User user = ForumPostRepository.findByUser(user);
 
 
     public ForumPost createPost(String title, String content, User user) {
@@ -32,12 +30,14 @@ public class ForumPostService<UserRepository> {
     }
 
     // Método para obter todas as postagens com paginação
-    public Page<ForumPost> getAllPosts(Pageable pageable) {
+    public Page<ForumPost> getAllPosts(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
         return forumPostRepository.findAll(pageable);
     }
 
     // Método para obter postagens por usuário
-    public Page<ForumPost> getPostsByUser(User user, Pageable pageable) {
-        return forumPostRepository.findByUser(user, pageable); // Usando o método do repositório
+    public Page<ForumPost> getPostsByUser(User user, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);  // Cria um Pageable
+        return forumPostRepository.findByUser(user, pageable);  // Usa o método do repositório
     }
 }
