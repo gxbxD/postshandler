@@ -37,15 +37,17 @@ public class SecurityConfig {
         return source;
     }
 
-    @SuppressWarnings("deprecation")
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            .cors(cors -> cors.configurationSource(corsConfigurationSource())) // Adiciona o CORS configurado
-            .authorizeRequests(requests -> requests
-                .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html", "/api/forum/posts/", "/api/forum/create").permitAll()
-                .anyRequest().authenticated())
-            .csrf(csrf -> csrf.disable());
+            .cors(cors -> cors.configurationSource(corsConfigurationSource())) // Configuração CORS
+            .authorizeHttpRequests(authorize -> authorize
+                .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html", "/api/forum/posts/", "/api/forum/create")
+                .permitAll() // Endpoints públicos
+                .anyRequest().authenticated() // Autenticação exigida para outras rotas
+            )
+            .csrf(csrf -> csrf.disable()); // CSRF desabilitado
 
         return http.build();
     }
@@ -54,4 +56,5 @@ public class SecurityConfig {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
 }

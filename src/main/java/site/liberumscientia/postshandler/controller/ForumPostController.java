@@ -4,6 +4,8 @@ import site.liberumscientia.postshandler.service.ForumPostService;
 
 import site.liberumscientia.postshandler.dto.ForumPostRequest;
 import site.liberumscientia.postshandler.model.ForumPost;
+import site.liberumscientia.postshandler.model.User;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -13,7 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-
+import org.springframework.security.core.userdetails.UserDetails;
 
 @RestController
 @RequestMapping("/api/forum")
@@ -23,17 +25,21 @@ public class ForumPostController {
     private ForumPostService forumPostService;
 
     @PostMapping("/create")
-    public ResponseEntity<ForumPost> createPost(@RequestBody ForumPostRequest request, @AuthenticationPrincipal User user) {
-        ForumPost post = forumPostService.createPost(request.getTitle(), request.getContent(), user);
+    public ResponseEntity<ForumPost> createPost(
+        @RequestBody ForumPostRequest request, 
+        @AuthenticationPrincipal UserDetails userDetails // Extraindo o usuário autenticado
+    ) {
+        ForumPost post = forumPostService.createPost(request.getTitle(), request.getContent(), (User) userDetails);
         return ResponseEntity.ok(post);
     }
 
     @GetMapping("/posts")
-    public Page<Post> getAllPosts(
+    public Page<ForumPost> getAllPosts(
         @RequestParam(value = "page", defaultValue = "0") int page,
-        @RequestParam(value = "page", defaultValue = "10") int size
+        @RequestParam(value = "size", defaultValue = "10") int size
     ) {
-        return ForumPostService.getAllPosts(page, size);
+        return forumPostService.getAllPosts(page, size);
     }
 }
+
 
